@@ -11,6 +11,10 @@ public class Produto {
     private int estoqueMinimo;
     private String categoria;
     private boolean ativo;
+    private Double largura;
+    private Double altura;
+    private Double comprimento;
+    private Double peso;
 
     public Produto() {
     }
@@ -101,5 +105,37 @@ public class Produto {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public Double getLargura() {
+        return largura;
+    }
+
+    public void setLargura(Double largura) {
+        this.largura = largura;
+    }
+
+    public Double getAltura() {
+        return altura;
+    }
+
+    public void setAltura(Double altura) {
+        this.altura = altura;
+    }
+
+    public Double getComprimento() {
+        return comprimento;
+    }
+
+    public void setComprimento(Double comprimento) {
+        this.comprimento = comprimento;
+    }
+
+    public Double getPeso() {
+        return peso;
+    }
+
+    public void setPeso(Double peso) {
+        this.peso = peso;
     }
 }

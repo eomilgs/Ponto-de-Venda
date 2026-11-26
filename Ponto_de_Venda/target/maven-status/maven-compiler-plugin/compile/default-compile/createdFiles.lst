@@ -1,2 +1,4 @@
-br\com\pdv\database\ConexaoSQLite.class
 br\com\pdv\database\CriarBanco.class
+br\com\pdv\dao\ProdutoDAO.class
+br\com\pdv\database\ConexaoSQLite.class
+br\com\pdv\model\Produto.class
