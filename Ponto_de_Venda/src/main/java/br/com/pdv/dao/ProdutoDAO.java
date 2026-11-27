@@ -8,6 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProdutoDAO {
 
@@ -60,5 +63,94 @@ public class ProdutoDAO {
 
             statement.executeUpdate();
         }
+
+
     }
+    public List<Produto> listarTodos() throws SQLException {
+
+        List<Produto> produtos = new ArrayList<>();
+
+        String sql = "SELECT * FROM Produto";
+
+        try (Connection conexao = ConexaoSQLite.conectar();
+             PreparedStatement statement = conexao.prepareStatement(sql);
+             ResultSet resultado = statement.executeQuery()) {
+
+            while (resultado.next()) {
+
+                Produto produto = mapearProduto(resultado);
+
+                produtos.add(produto);
+            }
+        }
+
+        return produtos;
+    }
+    public List<Produto> buscarPorNomeOuCodigo(String pesquisa)
+            throws SQLException {
+
+        List<Produto> produtos = new ArrayList<>();
+
+        String sql = """
+            SELECT * FROM Produto
+            WHERE nome LIKE ?
+               OR codigo LIKE ?
+            """;
+
+        try (Connection conexao = ConexaoSQLite.conectar();
+             PreparedStatement statement = conexao.prepareStatement(sql)) {
+
+            String termo = "%" + pesquisa + "%";
+
+            statement.setString(1, termo);
+            statement.setString(2, termo);
+
+            try (ResultSet resultado = statement.executeQuery()) {
+
+                while (resultado.next()) {
+
+                    Produto produto = mapearProduto(resultado);
+
+                    produtos.add(produto);
+                }
+            }
+        }
+
+        return produtos;
+    }
+    private Produto mapearProduto(ResultSet resultado)
+            throws SQLException {
+
+        Produto produto = new Produto();
+
+        produto.setId(resultado.getInt("id"));
+        produto.setNome(resultado.getString("nome"));
+        produto.setCodigo(resultado.getString("codigo"));
+        produto.setPreco(resultado.getDouble("preco"));
+        produto.setQuantidade(resultado.getInt("quantidade"));
+        produto.setPrecoCusto(resultado.getDouble("preco_custo"));
+        produto.setEstoqueMinimo(resultado.getInt("estoque_minimo"));
+        produto.setCategoria(resultado.getString("categoria"));
+
+        produto.setLargura(getDoubleNullable(resultado, "largura"));
+        produto.setAltura(getDoubleNullable(resultado, "altura"));
+        produto.setComprimento(getDoubleNullable(resultado, "comprimento"));
+        produto.setPeso(getDoubleNullable(resultado, "peso"));
+
+        produto.setAtivo(resultado.getInt("ativo") == 1);
+
+        return produto;
+    }
+    private Double getDoubleNullable(ResultSet resultado, String coluna)
+            throws SQLException {
+
+        double valor = resultado.getDouble(coluna);
+
+        if (resultado.wasNull()) {
+            return null;
+        }
+
+        return valor;
 }
+}
+
